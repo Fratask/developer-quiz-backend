@@ -1,4 +1,4 @@
-package ru.fratask.service;
+package ru.fratask.service.auth;
 
 import ru.fratask.model.dto.AuthenticationRequest;
 import ru.fratask.model.dto.AuthenticationResponse;

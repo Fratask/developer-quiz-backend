@@ -1,4 +1,4 @@
-package ru.fratask.service;
+package ru.fratask.service.auth;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;

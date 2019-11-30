@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import ru.fratask.model.dto.AuthenticationRequest;
-import ru.fratask.service.AuthService;
+import ru.fratask.service.auth.AuthService;
 
 @RestController
 @RequestMapping("/oauth")
