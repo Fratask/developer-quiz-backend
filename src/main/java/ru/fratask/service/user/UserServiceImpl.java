@@ -34,12 +34,15 @@ public class UserServiceImpl implements UserService {
             throw new QuizException(QuizExceptionResponse.USER_ALREADY_EXISTS);
         }));
 
-        return userRepository.save(
+        User savedUser = userRepository.save(
                 User.builder()
                         .username(username)
                         .password(passwordEncoder.encode(password))
                         .build()
         );
+        setRole(savedUser, Role.builder().name("USER").build());
+        return savedUser;
+
     }
 
     @Override
