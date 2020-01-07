@@ -11,8 +11,6 @@ import ru.fratask.model.dto.user.RegisterRequest;
 import ru.fratask.model.entity.UserRole;
 import ru.fratask.service.user.UserService;
 
-import javax.servlet.http.HttpServletRequest;
-
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -24,8 +22,8 @@ public class UserController {
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public ResponseEntity register(@RequestBody RegisterRequest registerRequest, HttpServletRequest request) {
-        userService.register(registerRequest.getUsername(), registerRequest.getPassword());
+    public ResponseEntity register(@RequestBody RegisterRequest registerRequest) {
+        userService.register(registerRequest.getUsername(), registerRequest.getPassword(), registerRequest.getEmail());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

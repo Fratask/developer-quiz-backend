@@ -15,11 +15,17 @@ import javax.persistence.*;
 @Table(name = "roles")
 public class Role {
 
+    /**
+     * Role id
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
+    /**
+     * Role name
+     */
     @Column(name = "name")
     private String name;
 }

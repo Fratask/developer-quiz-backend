@@ -11,9 +11,10 @@ public interface UserService {
      *
      * @param username registration username
      * @param password registration password
+     * @param email registration email
      * @return created User
      */
-    User register(String username, String password);
+    User register(String username, String password, String email);
 
     /**
      * Load User by id or username
