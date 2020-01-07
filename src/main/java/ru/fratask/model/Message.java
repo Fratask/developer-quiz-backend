@@ -8,7 +8,10 @@ import lombok.Getter;
 public enum Message {
 
     REGISTRATION_TITLE_MESSAGE("Developer Quiz registration confirm"),
-    REGISTRATION_BODY_MESSAGE("Your mail was used to register in Developer Quiz. Please confirm your email by clicking on the link "),
+    REGISTRATION_BODY_MESSAGE("Your email was used to register in Developer Quiz. Please confirm your email by clicking on the link "),
+    REGISTRATION_COMPLETE_TITLE_MESSAGE("Developer Quiz - email success confirmed"),
+    REGISTRATION_COMPLETE_BODY_MESSAGE("Your email was successful confirmed"),
+
 
     ;
     private String message;

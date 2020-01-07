@@ -53,4 +53,12 @@ public interface UserService {
      * @return userRole
      */
     UserRole setRole(User user, Role role);
+
+    /**
+     * Confirm user email registration
+     *
+     * @param email user email
+     * @param code  confirmation code
+     */
+    void confirm(String email, String code);
 }

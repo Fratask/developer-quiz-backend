@@ -7,16 +7,19 @@ import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.fratask.model.Message;
+import ru.fratask.model.entity.RegisterLink;
 import ru.fratask.model.entity.Role;
 import ru.fratask.model.entity.User;
 import ru.fratask.model.entity.UserRole;
 import ru.fratask.model.exception.QuizException;
 import ru.fratask.model.exception.QuizExceptionResponse;
+import ru.fratask.repository.RegisterLinkRepository;
 import ru.fratask.repository.RoleRepository;
 import ru.fratask.repository.UserRepository;
 import ru.fratask.repository.UserRoleRepository;
 import ru.fratask.service.mail.MailService;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -28,13 +31,15 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final RegisterLinkRepository registerLinkRepository;
     private final UserRoleRepository userRoleRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, UserRoleRepository userRoleRepository, PasswordEncoder passwordEncoder, MailService mailService) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, RegisterLinkRepository registerLinkRepository, UserRoleRepository userRoleRepository, PasswordEncoder passwordEncoder, MailService mailService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.registerLinkRepository = registerLinkRepository;
         this.userRoleRepository = userRoleRepository;
         this.passwordEncoder = passwordEncoder;
         this.mailService = mailService;
@@ -116,6 +121,17 @@ public class UserServiceImpl implements UserService {
                 .build());
     }
 
+    @Override
+    public void confirm(String email, String code) {
+        RegisterLink registerLink = registerLinkRepository.findByEmail(email).orElseThrow(() -> new QuizException(QuizExceptionResponse.CONFIRM_REGISTRATION_ERROR));
+        if (!registerLink.getCode().equals(code) || LocalDateTime.now().isAfter(registerLink.getExpirationDate()) || registerLink.getUsed()) {
+            throw new QuizException(QuizExceptionResponse.CONFIRM_REGISTRATION_ERROR);
+        }
+        registerLink.setUsed(true);
+        registerLinkRepository.save(registerLink);
+        mailService.send(email, Message.REGISTRATION_COMPLETE_TITLE_MESSAGE.getMessage(), Message.REGISTRATION_COMPLETE_BODY_MESSAGE.getMessage());
+    }
+
     private Role loadRole(Role role) {
         Role loadedRole;
         if (role.getId() != null && role.getName() != null) {
@@ -132,7 +148,13 @@ public class UserServiceImpl implements UserService {
         throw new QuizException(QuizExceptionResponse.ROLE_NOT_FOUND);
     }
 
-    private String generateRegistrationLink(String key) {
-        return apiUrl + UUID.randomUUID() + Encryptors.text(apiUrl, KeyGenerators.string().generateKey()).encrypt(key);
+    private String generateRegistrationLink(String email) {
+        String code = UUID.randomUUID() + Encryptors.text(apiUrl, KeyGenerators.string().generateKey()).encrypt(email);
+        registerLinkRepository.save(RegisterLink.builder()
+                .email(email)
+                .code(code)
+                .expirationDate(LocalDateTime.now().plusDays(1))
+                .build());
+        return apiUrl + "/user/confirm?email=" + email + "&code=" + code;
     }
 }

@@ -20,6 +20,7 @@ public enum QuizExceptionResponse {
     INVALID_CREDENTIALS(5, "Invalid credentials"),
     USER_UPDATE_FAIL(6, "Updating fail"),
     ROLE_NOT_FOUND(7, "Role not found"),
+    CONFIRM_REGISTRATION_ERROR(8, "Confirm registration error")
 
     ;
 
